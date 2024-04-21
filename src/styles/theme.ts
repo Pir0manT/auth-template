@@ -1,16 +1,18 @@
 'use client'
 import { createTheme } from '@mui/material/styles'
-import { Poppins } from 'next/font/google'
+import { Inter as AppFont } from 'next/font/google'
 
-const poppins = Poppins({
-  weight: ['400', '500', '600'],
-  subsets: ['latin'],
+const appFont = AppFont({
+  weight: ['300', '400', '500', '600'],
+  // weight: ['300', '400', '500', '700'],
+  // weight: ['400'],
+  subsets: ['latin', 'cyrillic'],
   display: 'swap',
 })
 
 const theme = createTheme({
   typography: {
-    fontFamily: poppins.style.fontFamily,
+    fontFamily: appFont.style.fontFamily,
   },
 })
 
