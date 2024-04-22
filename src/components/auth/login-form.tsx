@@ -8,7 +8,7 @@ import { useState, useTransition } from 'react'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
 
-import { login } from '@/actions/login'
+import { loginAction } from '@/actions/login'
 import CardWrapper from '@/components/auth/card-wrapper'
 import PasswordField from '@/components/auth/password-field'
 import FormMessage from '@/components/form-message'
@@ -44,11 +44,13 @@ const LoginForm = () => {
       await new Promise((resolve) => {
         setTimeout(resolve, 3 * 1000)
       })
-      login(data).then((result) => {
-        if (result.code === 'success') {
-          setLoginResult({ severity: 'success', message: result.message })
-        } else {
+      loginAction(data).then((result) => {
+        if (!result) {
+          setLoginResult({ severity: undefined, message: '' })
+        } else if (result.code === 'error') {
           setLoginResult({ severity: 'error', message: result.message })
+        } else if (result.code === 'success') {
+          setLoginResult({ severity: 'success', message: result.message })
         }
       })
     })
@@ -61,7 +63,7 @@ const LoginForm = () => {
         backButtonLabel="Еще не зарегистрированы?"
         backButtonHref="/auth/register"
         showSocialButtons
-        disableSocialButtons={isPending}
+        disableButtons={isPending}
       >
         <form onSubmit={handleSubmit(onSubmit)} noValidate>
           <Stack direction={'column'} gap={2} mb={3}>

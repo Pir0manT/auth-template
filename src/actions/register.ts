@@ -1,6 +1,9 @@
 'use server'
+import bcrypt from 'bcryptjs'
 import * as z from 'zod'
 
+import { getUserByEmail } from '@/data/user'
+import { db } from '@/lib/db'
 import { registerSchema } from '@/schemas'
 
 export const registerAction = async (
@@ -14,5 +17,27 @@ export const registerAction = async (
     }
   }
 
-  return { code: 'success', message: 'Проверочное письмо отправлено!' }
+  const { name, email, password } = validatedFields.data
+  const hashedPassword = await bcrypt.hash(password, 10)
+
+  const existingUser = await getUserByEmail(email)
+
+  if (existingUser) {
+    return {
+      code: 'error',
+      message: 'Пользователь с таким email уже существует',
+    }
+  }
+
+  await db.user.create({
+    data: {
+      name,
+      email,
+      password: hashedPassword,
+    },
+  })
+
+  //TODO: send email
+
+  return { code: 'success', message: 'Пользователь зарегистрирован' }
 }

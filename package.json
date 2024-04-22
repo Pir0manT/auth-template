@@ -19,7 +19,9 @@
     "@mui/material": "^5.15.15",
     "@mui/material-nextjs": "^5.15.11",
     "@prisma/client": "^5.12.1",
+    "bcryptjs": "^2.4.3",
     "next": "14.2.2",
+    "next-auth": "^5.0.0-beta.16",
     "react": "^18",
     "react-dom": "^18",
     "react-hook-form": "^7.51.3",
@@ -28,6 +30,7 @@
   },
   "devDependencies": {
     "@hookform/devtools": "^4.3.1",
+    "@types/bcryptjs": "^2.4.6",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
