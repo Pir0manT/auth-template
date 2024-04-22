@@ -1,54 +1,56 @@
 'use client'
-// import { DevTool } from '@hookform/devtools'
+
 import { zodResolver } from '@hookform/resolvers/zod'
-import LoginIcon from '@mui/icons-material/Login'
+import HowToRegIcon from '@mui/icons-material/HowToReg'
 import { AlertColor, LoadingButton } from '@mui/lab'
 import { Stack, TextField } from '@mui/material'
 import { useState, useTransition } from 'react'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
 
-import { login } from '@/actions/login'
+import { registerAction } from '@/actions/register'
 import CardWrapper from '@/components/auth/card-wrapper'
 import PasswordField from '@/components/auth/password-field'
 import FormMessage from '@/components/form-message'
-import { loginSchema } from '@/schemas'
+import { registerSchema } from '@/schemas'
 
-type LoginResult = { severity: AlertColor | undefined; message: string }
+type RegisterResult = { severity: AlertColor | undefined; message: string }
 
-const LoginForm = () => {
+const RegisterForm = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
     // control,
-  } = useForm<z.infer<typeof loginSchema>>({
-    resolver: zodResolver(loginSchema),
+  } = useForm<z.infer<typeof registerSchema>>({
+    resolver: zodResolver(registerSchema),
     defaultValues: {
+      name: '',
       email: '',
       password: '',
+      passwordConfirmation: '',
     },
     mode: 'onTouched',
   })
 
   const [isPending, startTransition] = useTransition()
-  const [loginResult, setLoginResult] = useState<LoginResult>({
+  const [registerResult, setRegisterResult] = useState<RegisterResult>({
     severity: undefined,
     message: '',
   })
 
-  const onSubmit = (data: z.infer<typeof loginSchema>) => {
-    setLoginResult({ severity: undefined, message: '' })
+  const onSubmit = (data: z.infer<typeof registerSchema>) => {
+    setRegisterResult({ severity: undefined, message: '' })
 
     startTransition(async () => {
       await new Promise((resolve) => {
         setTimeout(resolve, 3 * 1000)
       })
-      login(data).then((result) => {
+      registerAction(data).then((result) => {
         if (result.code === 'success') {
-          setLoginResult({ severity: 'success', message: result.message })
+          setRegisterResult({ severity: 'success', message: result.message })
         } else {
-          setLoginResult({ severity: 'error', message: result.message })
+          setRegisterResult({ severity: 'error', message: result.message })
         }
       })
     })
@@ -57,14 +59,22 @@ const LoginForm = () => {
   return (
     <>
       <CardWrapper
-        headerLabel="Добро пожаловать!"
-        backButtonLabel="Еще не зарегистрированы?"
-        backButtonHref="/auth/register"
-        showSocialButtons
-        disableSocialButtons={isPending}
+        headerLabel="Регистрация"
+        backButtonLabel="Уже зарегистрированы?"
+        backButtonHref="/auth/login"
+        disableButtons={isPending}
       >
         <form onSubmit={handleSubmit(onSubmit)} noValidate>
           <Stack direction={'column'} gap={2} mb={3}>
+            <TextField
+              {...register('name')}
+              error={!!errors.name}
+              helperText={errors.name?.message}
+              label="Имя пользователя"
+              variant="outlined"
+              fullWidth
+              disabled={isPending}
+            />
             <TextField
               {...register('email')}
               error={!!errors.email}
@@ -82,11 +92,19 @@ const LoginForm = () => {
               variant="outlined"
               disabled={isPending}
             />
+            <PasswordField
+              {...register('passwordConfirmation')}
+              error={!!errors.passwordConfirmation}
+              helperText={errors.passwordConfirmation?.message}
+              label="Пароль еще раз"
+              variant="outlined"
+              disabled={isPending}
+            />
             <FormMessage
-              message={loginResult.message}
-              severity={loginResult.severity}
+              message={registerResult.message}
+              severity={registerResult.severity}
               onClose={() => {
-                setLoginResult({ severity: undefined, message: '' })
+                setRegisterResult({ severity: undefined, message: '' })
               }}
             />
           </Stack>
@@ -95,12 +113,12 @@ const LoginForm = () => {
             variant="contained"
             size="large"
             loadingPosition="start"
-            startIcon={<LoginIcon />}
+            startIcon={<HowToRegIcon />}
             loading={isPending}
             type="submit"
             fullWidth
           >
-            Войти
+            Зарегистрироваться
           </LoadingButton>
         </form>
       </CardWrapper>
@@ -109,4 +127,4 @@ const LoginForm = () => {
   )
 }
 
-export default LoginForm
+export default RegisterForm

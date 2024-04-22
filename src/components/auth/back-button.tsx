@@ -1,14 +1,14 @@
 'use client'
 
-import { Button } from '@mui/material'
+import { Button, ButtonProps } from '@mui/material'
 import Link from 'next/link'
-interface BackButtonProps {
+interface BackButtonProps extends ButtonProps {
   label: string
-  href: string
 }
-const BackButton = ({ label, href }: BackButtonProps) => {
+const BackButton = ({ label, ...props }: BackButtonProps) => {
   return (
     <Button
+      {...props}
       fullWidth
       variant="text"
       sx={{
@@ -16,7 +16,6 @@ const BackButton = ({ label, href }: BackButtonProps) => {
         textDecoration: 'none',
         '&:hover': { textDecoration: 'underline' },
       }}
-      href={href}
       LinkComponent={Link}
     >
       {label}

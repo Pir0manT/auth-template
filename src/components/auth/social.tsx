@@ -7,7 +7,11 @@ import MailRuIcon from '@/components/auth/mailru-icon'
 import VKIcon from '@/components/auth/vk-icon'
 import YandexIcon from '@/components/auth/yandex-icon'
 
-const Social = () => {
+interface SocialProps {
+  disableSocialButtons?: boolean
+}
+
+const Social = ({ disableSocialButtons }: SocialProps) => {
   return (
     <>
       <Box
@@ -24,6 +28,7 @@ const Social = () => {
           fullWidth
           color="secondary"
           onClick={() => {}}
+          disabled={disableSocialButtons}
         >
           <FcGoogle fontSize={28} />
           <Typography variant="body2" ml={1}>
@@ -35,6 +40,7 @@ const Social = () => {
           fullWidth
           color="secondary"
           onClick={() => {}}
+          disabled={disableSocialButtons}
         >
           <YandexIcon sx={{ fontSize: '30px' }} />
           <Typography variant="body2" ml={1}>
@@ -55,6 +61,7 @@ const Social = () => {
           fullWidth
           color="secondary"
           onClick={() => {}}
+          disabled={disableSocialButtons}
         >
           <VKIcon sx={{ fontSize: '26px' }} />
           <Typography variant="body2" ml={1}>
@@ -66,6 +73,7 @@ const Social = () => {
           fullWidth
           color="secondary"
           onClick={() => {}}
+          disabled={disableSocialButtons}
         >
           <MailRuIcon sx={{ fontSize: '28px' }} />
           <Typography variant="body2" ml={1}>

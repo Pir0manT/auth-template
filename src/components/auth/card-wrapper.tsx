@@ -13,6 +13,7 @@ interface CardWrapperProps {
   backButtonLabel: string
   backButtonHref: string
   showSocialButtons?: boolean
+  disableButtons?: boolean
 }
 const CardWrapper = ({
   children,
@@ -20,6 +21,7 @@ const CardWrapper = ({
   backButtonLabel,
   backButtonHref,
   showSocialButtons,
+  disableButtons,
 }: CardWrapperProps) => {
   return (
     <Card sx={{ width: '400px' }}>
@@ -29,12 +31,16 @@ const CardWrapper = ({
         <>
           <DividerWithText text={'или войдите через'} />
           <CardContent>
-            <Social />
+            <Social disableSocialButtons={disableButtons} />
           </CardContent>
         </>
       )}
       <CardContent>
-        <BackButton label={backButtonLabel} href={backButtonHref} />
+        <BackButton
+          label={backButtonLabel}
+          href={backButtonHref}
+          disabled={disableButtons}
+        />
       </CardContent>
     </Card>
   )
