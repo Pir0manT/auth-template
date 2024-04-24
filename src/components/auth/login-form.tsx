@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import LoginIcon from '@mui/icons-material/Login'
 import { AlertColor, LoadingButton } from '@mui/lab'
 import { Stack, TextField } from '@mui/material'
+import { useSearchParams } from 'next/navigation'
 import { useEffect, useState, useTransition } from 'react'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
@@ -13,7 +14,6 @@ import CardWrapper from '@/components/auth/card-wrapper'
 import PasswordField from '@/components/auth/password-field'
 import FormMessage from '@/components/form-message'
 import { loginSchema } from '@/schemas'
-import { useSearchParams } from 'next/navigation'
 
 type LoginResult = { severity: AlertColor | undefined; message: string }
 

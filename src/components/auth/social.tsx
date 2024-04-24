@@ -1,13 +1,13 @@
 'use client'
 import { Box, Typography } from '@mui/material'
 import { Button } from '@mui/material'
-import { FcGoogle } from 'react-icons/fc'
-import { BsGithub } from 'react-icons/bs'
-
-import YandexIcon from '@/components/auth/yandex-icon'
 import { signIn } from 'next-auth/react'
-import { DEFAULT_LOGIN_REDIRECT } from '@/routes'
+import { BsGithub } from 'react-icons/bs'
+import { FcGoogle } from 'react-icons/fc'
+
 import DiscordIcon from '@/components/auth/discord-icon'
+import YandexIcon from '@/components/auth/yandex-icon'
+import { DEFAULT_LOGIN_REDIRECT } from '@/routes'
 
 interface SocialProps {
   disableSocialButtons?: boolean

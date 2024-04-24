@@ -1,13 +1,13 @@
 import Credentials from '@auth/core/providers/credentials'
 import bcrypt from 'bcryptjs'
 import type { NextAuthConfig } from 'next-auth'
+import Discord from 'next-auth/providers/discord'
+import GitHub from 'next-auth/providers/github'
+import Google from 'next-auth/providers/google'
+import Yandex from 'next-auth/providers/yandex'
 
 import { getUserByEmail } from '@/data/user'
 import { loginSchema } from '@/schemas'
-import Google from 'next-auth/providers/google'
-import Yandex from 'next-auth/providers/yandex'
-import Discord from 'next-auth/providers/discord'
-import GitHub from 'next-auth/providers/github'
 interface CustomProviderContext {
   tokens: {
     access_token: string

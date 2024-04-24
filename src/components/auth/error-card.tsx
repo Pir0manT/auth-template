@@ -1,5 +1,6 @@
-import CardWrapper from '@/components/auth/card-wrapper'
 import { Typography } from '@mui/material'
+
+import CardWrapper from '@/components/auth/card-wrapper'
 
 const ErrorCard = () => {
   return (

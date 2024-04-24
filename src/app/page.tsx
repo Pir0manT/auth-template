@@ -3,10 +3,8 @@ import { LoadingButton } from '@mui/lab'
 import { Box, Typography } from '@mui/material'
 
 import { LoginButton } from '@/components/auth/login-button'
-import { sendMail } from '@/lib/mailer'
 
 export default function Home() {
-  // sendMail({ to: 'savilit@yandex.ru', subject: 'Тест', body: 'Привет, мир!' })
   return (
     <Box
       component="section"

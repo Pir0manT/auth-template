@@ -3,7 +3,7 @@
  * Эти пути будут доступны всем пользователям
  * @type {string[]}
  */
-export const publicRoutes = ['/']
+export const publicRoutes = ['/', '/auth/verify']
 
 /**
  * Массив путей, которые используются только для аутентификации
