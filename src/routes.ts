@@ -7,10 +7,10 @@ export const publicRoutes = ['/']
 
 /**
  * Массив путей, которые используются только для аутентификации
- * Эти пути будут перенаправлять пользователя на страницу настроек
+ * Эти пути будут перенаправлять пользователя на страницу по умолчанию DEFAULT_LOGIN_REDIRECT
  * @type {string[]}
  */
-export const authRoutes = ['/auth/login', '/auth/register']
+export const authRoutes = ['/auth/login', '/auth/register', '/auth/error']
 
 /**
  * Этот префикс для API путей аутентификации

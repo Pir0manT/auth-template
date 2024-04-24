@@ -5,6 +5,8 @@ import * as z from 'zod'
 import { getUserByEmail } from '@/data/user'
 import { db } from '@/lib/db'
 import { registerSchema } from '@/schemas'
+import { generateVerificationToken } from '@/lib/tokens'
+import { sendVerificationEmail } from '@/lib/mailer'
 
 export const registerAction = async (
   values: z.infer<typeof registerSchema>
@@ -36,8 +38,16 @@ export const registerAction = async (
       password: hashedPassword,
     },
   })
+  const verificationToken = await generateVerificationToken(email)
 
-  //TODO: send email
+  await sendVerificationEmail(
+    name,
+    verificationToken.email,
+    verificationToken.token
+  )
 
-  return { code: 'success', message: 'Пользователь зарегистрирован' }
+  return {
+    code: 'success',
+    message: 'Письмо с подтверждением email отправлено. Проверьте почту!',
+  }
 }

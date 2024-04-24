@@ -3,6 +3,9 @@ import { AuthError } from 'next-auth'
 import * as z from 'zod'
 
 import { signIn } from '@/auth'
+import { getUserByEmail } from '@/data/user'
+import { sendVerificationEmail } from '@/lib/mailer'
+import { generateVerificationToken } from '@/lib/tokens'
 import { DEFAULT_LOGIN_REDIRECT } from '@/routes'
 import { loginSchema } from '@/schemas'
 
@@ -15,8 +18,22 @@ export const loginAction = async (values: z.infer<typeof loginSchema>) => {
     }
   }
 
-  // return { code: 'success', message: 'Проверочное письмо отправлено!' }
   const { email, password } = validatedFields.data
+  const existingUser = await getUserByEmail(email)
+
+  if (existingUser && !existingUser?.emailVerified) {
+    const verificationToken = await generateVerificationToken(email)
+    await sendVerificationEmail(
+      existingUser.name as string,
+      verificationToken.email,
+      verificationToken.token
+    )
+    return {
+      code: 'success',
+      message: 'Письмо с подтверждением email отправлено. Проверьте почту!',
+    }
+  }
+
   try {
     await signIn('credentials', {
       email,
