@@ -3,7 +3,9 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import LoginIcon from '@mui/icons-material/Login'
 import { AlertColor, LoadingButton } from '@mui/lab'
-import { Stack, TextField } from '@mui/material'
+import { Link as LinkMui, Stack, TextField } from '@mui/material'
+import { styled } from '@mui/system'
+import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import { useEffect, useState, useTransition } from 'react'
 import { useForm } from 'react-hook-form'
@@ -14,8 +16,16 @@ import CardWrapper from '@/components/auth/card-wrapper'
 import PasswordField from '@/components/auth/password-field'
 import FormMessage from '@/components/form-message'
 import { loginSchema } from '@/schemas'
+import theme from '@/styles/theme'
 
 type LoginResult = { severity: AlertColor | undefined; message: string }
+
+const NextLink = styled(Link, {
+  shouldForwardProp: (prop) => prop !== 'disabled',
+})(({ disabled }: { disabled: boolean }) => ({
+  textDecoration: 'none',
+  pointerEvents: disabled ? 'none' : 'auto',
+}))
 
 const LoginForm = () => {
   const {
@@ -95,6 +105,21 @@ const LoginForm = () => {
               variant="outlined"
               disabled={isPending}
             />
+            <NextLink href={'/auth/reset'} disabled={isPending}>
+              <LinkMui
+                variant={'body2'}
+                underline={'hover'}
+                component={'span'}
+                sx={{
+                  color: (theme) =>
+                    isPending
+                      ? theme.palette.text.disabled
+                      : theme.palette.primary.main,
+                }}
+              >
+                Забыли пароль?
+              </LinkMui>
+            </NextLink>
             <FormMessage
               message={loginResult.message}
               severity={loginResult.severity}

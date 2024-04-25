@@ -1,7 +1,7 @@
 import { compile } from 'handlebars'
 import nodemailer from 'nodemailer'
 
-import { confirmationTemplate } from '@/email-templates'
+import { confirmationTemplate, resetPasswordTemplate } from '@/email-templates'
 
 async function sendMail({
   from,
@@ -57,6 +57,21 @@ export const sendVerificationEmail = async (
     from: 'Auth Template App',
     to: email,
     subject: 'Подтверждение регистрации в Auth Template',
+    body,
+  })
+}
+
+export const sendPasswordResetEmail = async (
+  name: string,
+  email: string,
+  token: string
+) => {
+  const resetLink = `${process.env.NEXTAUTH_URL}/auth/new-password?token=${token}`
+  const body = compileTemplate(resetPasswordTemplate, name, resetLink)
+  await sendMail({
+    from: 'Auth Template App',
+    to: email,
+    subject: 'Сброс пароля в Auth Template',
     body,
   })
 }

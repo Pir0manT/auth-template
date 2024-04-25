@@ -21,7 +21,6 @@ const RegisterForm = () => {
     register,
     handleSubmit,
     formState: { errors },
-    // control,
   } = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -122,7 +121,6 @@ const RegisterForm = () => {
           </LoadingButton>
         </form>
       </CardWrapper>
-      {/*<DevTool control={control} />*/}
     </>
   )
 }

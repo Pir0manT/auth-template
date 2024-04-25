@@ -10,7 +10,13 @@ export const publicRoutes = ['/', '/auth/verify']
  * Эти пути будут перенаправлять пользователя на страницу по умолчанию DEFAULT_LOGIN_REDIRECT
  * @type {string[]}
  */
-export const authRoutes = ['/auth/login', '/auth/register', '/auth/error']
+export const authRoutes = [
+  '/auth/login',
+  '/auth/register',
+  '/auth/error',
+  '/auth/reset',
+  '/auth/new-password',
+]
 
 /**
  * Этот префикс для API путей аутентификации

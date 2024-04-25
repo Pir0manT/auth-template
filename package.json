@@ -18,7 +18,7 @@
     "@mui/lab": "^5.0.0-alpha.170",
     "@mui/material": "^5.15.15",
     "@mui/material-nextjs": "^5.15.11",
-    "@prisma/client": "^5.12.1",
+    "@prisma/client": "^5.13.0",
     "bcryptjs": "^2.4.3",
     "handlebars": "^4.7.8",
     "next": "14.2.2",
@@ -43,7 +43,7 @@
     "eslint-config-next": "14.2.2",
     "eslint-plugin-simple-import-sort": "^12.1.0",
     "prettier": "^3.2.5",
-    "prisma": "^5.12.1",
+    "prisma": "^5.13.0",
     "typescript": "^5"
   }
 }

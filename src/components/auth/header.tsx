@@ -31,9 +31,9 @@ const Header = ({ label }: HeaderProps) => {
           variant="body1"
           fontSize="14px"
           sx={{ color: (theme: Theme) => theme.palette.grey[600] }}
-        >
-          {label}
-        </Typography>
+          textAlign={'center'}
+          dangerouslySetInnerHTML={{ __html: label.replace(/\n/g, '<br />') }}
+        />
       }
     />
   )
