@@ -1,6 +1,5 @@
 'use client'
 
-import { AlertColor } from '@mui/lab'
 import { Box, CircularProgress } from '@mui/material'
 import { useSearchParams } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
@@ -8,12 +7,12 @@ import { useCallback, useEffect, useState } from 'react'
 import { verifyAction } from '@/actions/verify'
 import CardWrapper from '@/components/auth/card-wrapper'
 import FormMessage from '@/components/form-message'
+import { setResult, SeverityResult } from '@/lib/helpers'
 
-type VerifyResult = { severity: AlertColor | undefined; message: string }
 const VerificationForm = () => {
   const searchParams = useSearchParams()
   const token = searchParams.get('token')
-  const [verifyResult, setVerifyResult] = useState<VerifyResult>({
+  const [verifyResult, setVerifyResult] = useState<SeverityResult>({
     severity: undefined,
     message: '',
   })
@@ -25,13 +24,7 @@ const VerificationForm = () => {
     }
     verifyAction(token)
       .then((result) => {
-        if (!result) {
-          setVerifyResult({ severity: undefined, message: '' })
-        } else if (result.code === 'error') {
-          setVerifyResult({ severity: 'error', message: result.message })
-        } else if (result.code === 'success') {
-          setVerifyResult({ severity: 'success', message: result.message })
-        }
+        setResult(result, setVerifyResult)
       })
       .catch(() => {
         setVerifyResult({ severity: 'error', message: 'Что-то пошло не так!' })

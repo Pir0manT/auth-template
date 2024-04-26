@@ -6,6 +6,7 @@ export const loginSchema = z.object({
     .min(1, { message: 'Email не может быть пустым' })
     .email({ message: 'Неверный формат email' }),
   password: z.string().min(1, { message: 'Пароль не может быть пустым' }),
+  code: z.optional(z.string()),
 })
 
 export const resetPasswordSchema = z.object({

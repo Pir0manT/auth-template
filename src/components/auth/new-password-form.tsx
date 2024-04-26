@@ -2,7 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import EnhancedEncryptionIcon from '@mui/icons-material/EnhancedEncryption'
-import { AlertColor, LoadingButton } from '@mui/lab'
+import { LoadingButton } from '@mui/lab'
 import { Stack } from '@mui/material'
 import { useSearchParams } from 'next/navigation'
 import { useState, useTransition } from 'react'
@@ -13,9 +13,8 @@ import { setNewPasswordAction } from '@/actions/new-password'
 import CardWrapper from '@/components/auth/card-wrapper'
 import PasswordField from '@/components/auth/password-field'
 import FormMessage from '@/components/form-message'
+import { setResult, SeverityResult } from '@/lib/helpers'
 import { newPasswordSchema } from '@/schemas'
-
-type NewPasswordResult = { severity: AlertColor | undefined; message: string }
 
 const NewPasswordForm = () => {
   const searchParams = useSearchParams()
@@ -36,7 +35,7 @@ const NewPasswordForm = () => {
 
   const [isPending, startTransition] = useTransition()
   const [setNewPasswordResult, setNewPasswordSetResult] =
-    useState<NewPasswordResult>({
+    useState<SeverityResult>({
       severity: undefined,
       message: '',
     })
@@ -48,21 +47,16 @@ const NewPasswordForm = () => {
       await new Promise((resolve) => {
         setTimeout(resolve, 3 * 1000)
       })
-      setNewPasswordAction(data, token).then((result) => {
-        if (!result) {
-          setNewPasswordSetResult({ severity: undefined, message: '' })
-        } else if (result.code === 'error') {
+      setNewPasswordAction(data, token)
+        .then((result) => {
+          setResult(result, setNewPasswordSetResult)
+        })
+        .catch(() => {
           setNewPasswordSetResult({
             severity: 'error',
-            message: result.message,
+            message: 'Что-то пошло не так!',
           })
-        } else if (result.code === 'success') {
-          setNewPasswordSetResult({
-            severity: 'success',
-            message: result.message,
-          })
-        }
-      })
+        })
     })
   }
   if (!token) return null

@@ -1,7 +1,7 @@
 'use client'
 import { zodResolver } from '@hookform/resolvers/zod'
 import SendIcon from '@mui/icons-material/Send'
-import { AlertColor, LoadingButton } from '@mui/lab'
+import { LoadingButton } from '@mui/lab'
 import { Stack, TextField } from '@mui/material'
 import { useState, useTransition } from 'react'
 import { useForm } from 'react-hook-form'
@@ -10,9 +10,8 @@ import * as z from 'zod'
 import { resetAction } from '@/actions/reset'
 import CardWrapper from '@/components/auth/card-wrapper'
 import FormMessage from '@/components/form-message'
+import { setResult, SeverityResult } from '@/lib/helpers'
 import { resetPasswordSchema } from '@/schemas'
-
-type ResetResult = { severity: AlertColor | undefined; message: string }
 
 const ResetForm = () => {
   const {
@@ -28,7 +27,7 @@ const ResetForm = () => {
   })
 
   const [isPending, startTransition] = useTransition()
-  const [resetResult, setResetResult] = useState<ResetResult>({
+  const [resetResult, setResetResult] = useState<SeverityResult>({
     severity: undefined,
     message: '',
   })
@@ -40,15 +39,13 @@ const ResetForm = () => {
       await new Promise((resolve) => {
         setTimeout(resolve, 3 * 1000)
       })
-      resetAction(data).then((result) => {
-        if (!result) {
-          setResetResult({ severity: undefined, message: '' })
-        } else if (result.code === 'error') {
-          setResetResult({ severity: 'error', message: result.message })
-        } else if (result.code === 'success') {
-          setResetResult({ severity: 'success', message: result.message })
-        }
-      })
+      resetAction(data)
+        .then((result) => {
+          setResult(result, setResetResult)
+        })
+        .catch(() => {
+          setResetResult({ severity: 'error', message: 'Что-то пошло не так!' })
+        })
     })
   }
 

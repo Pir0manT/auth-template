@@ -1,7 +1,9 @@
 import { VerificationToken } from '@prisma/client'
+import crypto from 'crypto'
 import { v4 as uuidv4 } from 'uuid'
 
 import { getPasswordResetTokenByEmail } from '@/data/password-reset-token'
+import { getTwoFactorTokenByEmail } from '@/data/two-factor-token'
 import { getVerificationTokenByEmail } from '@/data/verification-token'
 import { db } from '@/lib/db'
 
@@ -47,4 +49,31 @@ export const generateVerificationToken = async (
     },
   })
   return verificationToken
+}
+
+export const generateTwoFactorToken = async (email: string) => {
+  const token = crypto.randomInt(100_000, 1_000_000).toString()
+  // Время жизни токена, задается в минутах
+  const tokenLifeTime = process.env.TWO_FACTOR_TOKEN_LIFETIME || '60'
+  const expires = new Date(
+    new Date().getTime() + parseInt(tokenLifeTime) * 60 * 1000
+  )
+  const existingToken = await getTwoFactorTokenByEmail(email)
+  if (existingToken) {
+    await db.twoFactorToken.delete({
+      where: {
+        id: existingToken.id,
+      },
+    })
+  }
+
+  const twoFactorToken = await db.twoFactorToken.create({
+    data: {
+      email,
+      token,
+      expires,
+    },
+  })
+
+  return twoFactorToken
 }

@@ -2,7 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import HowToRegIcon from '@mui/icons-material/HowToReg'
-import { AlertColor, LoadingButton } from '@mui/lab'
+import { LoadingButton } from '@mui/lab'
 import { Stack, TextField } from '@mui/material'
 import { useState, useTransition } from 'react'
 import { useForm } from 'react-hook-form'
@@ -12,9 +12,8 @@ import { registerAction } from '@/actions/register'
 import CardWrapper from '@/components/auth/card-wrapper'
 import PasswordField from '@/components/auth/password-field'
 import FormMessage from '@/components/form-message'
+import { setResult, SeverityResult } from '@/lib/helpers'
 import { registerSchema } from '@/schemas'
-
-type RegisterResult = { severity: AlertColor | undefined; message: string }
 
 const RegisterForm = () => {
   const {
@@ -33,7 +32,7 @@ const RegisterForm = () => {
   })
 
   const [isPending, startTransition] = useTransition()
-  const [registerResult, setRegisterResult] = useState<RegisterResult>({
+  const [registerResult, setRegisterResult] = useState<SeverityResult>({
     severity: undefined,
     message: '',
   })
@@ -45,13 +44,16 @@ const RegisterForm = () => {
       await new Promise((resolve) => {
         setTimeout(resolve, 3 * 1000)
       })
-      registerAction(data).then((result) => {
-        if (result.code === 'success') {
-          setRegisterResult({ severity: 'success', message: result.message })
-        } else {
-          setRegisterResult({ severity: 'error', message: result.message })
-        }
-      })
+      registerAction(data)
+        .then((result) => {
+          setResult(result, setRegisterResult)
+        })
+        .catch(() => {
+          setRegisterResult({
+            severity: 'error',
+            message: 'Что-то пошло не так!',
+          })
+        })
     })
   }
 

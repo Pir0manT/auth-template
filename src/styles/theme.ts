@@ -5,8 +5,6 @@ import { Inter as AppFont } from 'next/font/google'
 
 const appFont = AppFont({
   weight: ['300', '400', '500', '600'],
-  // weight: ['300', '400', '500', '700'],
-  // weight: ['400'],
   subsets: ['latin', 'cyrillic'],
   display: 'swap',
 })

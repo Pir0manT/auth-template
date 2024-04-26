@@ -75,3 +75,13 @@ export const sendPasswordResetEmail = async (
     body,
   })
 }
+
+export const sendTwoFactorEmail = async (email: string, token: string) => {
+  const body = `<p>Ваш код для входа в приложение Auth Template: <b>${token}</b></p>`
+  await sendMail({
+    from: 'Auth Template App',
+    to: email,
+    subject: 'Код для входа в приложение Auth Template',
+    body,
+  })
+}
