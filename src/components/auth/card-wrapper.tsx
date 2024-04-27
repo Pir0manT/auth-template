@@ -24,7 +24,7 @@ const CardWrapper = ({
   disableButtons,
 }: CardWrapperProps) => {
   return (
-    <Card sx={{ width: '400px' }}>
+    <Card sx={{ minWidth: { xs: '328px', sm: '400px' }, mt: { xs: 1, sm: 0 } }}>
       <Header label={headerLabel} />
       <CardContent>{children}</CardContent>
       {showSocialButtons && (

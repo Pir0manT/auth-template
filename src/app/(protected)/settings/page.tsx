@@ -1,16 +1,17 @@
 import { Button } from '@mui/material'
 
-import { auth, signOut } from '@/auth'
+import { logout } from '@/actions/logout'
+import { getCurrentUser } from '@/lib/auth'
 
 const Settings = async () => {
-  const session = await auth()
+  const user = await getCurrentUser()
   return (
     <div>
-      {JSON.stringify(session)}
+      {JSON.stringify(user)}
       <form
         action={async () => {
           'use server'
-          await signOut()
+          await logout()
         }}
       >
         <Button type="submit">Выход</Button>
