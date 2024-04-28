@@ -1,23 +1,11 @@
-import { Button } from '@mui/material'
+import { User } from '@prisma/client'
 
-import { logout } from '@/actions/logout'
+import SettingsForm from '@/components/form-settings'
 import { getCurrentUser } from '@/lib/auth'
 
 const Settings = async () => {
   const user = await getCurrentUser()
-  return (
-    <div>
-      {JSON.stringify(user)}
-      <form
-        action={async () => {
-          'use server'
-          await logout()
-        }}
-      >
-        <Button type="submit">Выход</Button>
-      </form>
-    </div>
-  )
+  return <SettingsForm user={user as User} />
 }
 
 export default Settings

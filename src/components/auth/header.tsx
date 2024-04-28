@@ -1,21 +1,10 @@
-import { CardHeader, Theme, Typography } from '@mui/material'
-import { styled } from '@mui/system'
+import { Theme, Typography } from '@mui/material'
+
+import CenteredCardHeader from '@/components/centered-header'
 
 interface HeaderProps {
   label: string
 }
-
-const CenteredCardHeader = styled(CardHeader)(() => ({
-  '& .MuiCardHeader-content': {
-    width: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    mt: 2,
-    mb: 1,
-  },
-})) as typeof CardHeader
 
 const Header = ({ label }: HeaderProps) => {
   return (

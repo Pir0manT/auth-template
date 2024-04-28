@@ -12,7 +12,7 @@ import {
 } from '@mui/material'
 import { User } from '@prisma/client'
 import { useRouter } from 'next/navigation'
-import { Fragment,useState } from 'react'
+import { Fragment, useState } from 'react'
 
 import { logout } from '@/actions/logout'
 
@@ -54,7 +54,7 @@ const UserMenu = ({ user }: UserMenuProps) => {
   return (
     <Fragment>
       <Box sx={{ flexGrow: 0 }}>
-        <Tooltip title="Открыть настройки">
+        <Tooltip title={user.name}>
           <IconButton onClick={handleOpenMenu}>
             <Avatar
               src={user.image || undefined}
