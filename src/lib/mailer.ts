@@ -34,6 +34,7 @@ async function sendMail({
       html: body,
     })
   } catch (e) {
+    console.log(SMTP_HOST, SMTP_PORT, SMTP_EMAIL, SMTP_PASS)
     console.log(e)
     return null
   }
