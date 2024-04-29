@@ -20,7 +20,7 @@ export const loginAction = async (
   if (!validatedFields.success) {
     return {
       code: 'error',
-      message: 'Неправильный email или пароль 1',
+      message: 'Неправильный email или пароль',
     }
   }
 
@@ -30,7 +30,7 @@ export const loginAction = async (
   if (!existingUser || !existingUser.password || !existingUser.email) {
     return {
       code: 'error',
-      message: 'Неправильный email или пароль 2',
+      message: 'Неправильный email или пароль',
     }
   }
 
@@ -102,12 +102,13 @@ export const loginAction = async (
       redirectTo: callbackUrl || DEFAULT_LOGIN_REDIRECT,
     })
   } catch (error) {
+    console.log({ error })
     if (error instanceof AuthError) {
       switch (error.type) {
         case 'CredentialsSignin':
           return {
             code: 'error',
-            message: JSON.stringify(error),
+            message: 'Неправильный email или пароль',
           }
         default:
           return {
