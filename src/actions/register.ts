@@ -31,14 +31,14 @@ export const registerAction = async (
     }
   }
 
-  await db.user.create({
+  const newUser = await db.user.create({
     data: {
       name,
       email,
       password: hashedPassword,
     },
   })
-  const verificationToken = await generateVerificationToken(email)
+  const verificationToken = await generateVerificationToken(email, newUser.id)
 
   await sendVerificationEmail(
     name,

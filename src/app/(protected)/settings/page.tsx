@@ -1,11 +1,16 @@
 import { User } from '@prisma/client'
+import { SessionProvider } from 'next-auth/react'
 
+import { auth } from '@/auth'
 import SettingsForm from '@/components/form-settings'
-import { getCurrentUser } from '@/lib/auth'
 
 const Settings = async () => {
-  const user = await getCurrentUser()
-  return <SettingsForm user={user as User} />
+  const session = await auth()
+  return (
+    <SessionProvider session={session}>
+      <SettingsForm />
+    </SessionProvider>
+  )
 }
 
 export default Settings

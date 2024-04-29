@@ -20,6 +20,7 @@ interface UserMenuProps {
   user: User
 }
 
+// const UserMenu = () => {
 const UserMenu = ({ user }: UserMenuProps) => {
   const menuItems = [
     { icon: <Settings fontSize="small" />, label: 'Настройки' },
@@ -51,13 +52,15 @@ const UserMenu = ({ user }: UserMenuProps) => {
         break
     }
   }
+
+  if (!user) return null
   return (
     <Fragment>
       <Box sx={{ flexGrow: 0 }}>
-        <Tooltip title={user.name}>
+        <Tooltip title={'Профиль пользователя'}>
           <IconButton onClick={handleOpenMenu}>
             <Avatar
-              src={user.image || undefined}
+              src={user?.image || undefined}
               sx={{ width: '48px', height: '48px' }}
             />
           </IconButton>

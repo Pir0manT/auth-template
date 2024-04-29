@@ -52,7 +52,8 @@ export const registerSchema = z
 
 export const settingSchema = z.object({
   name: z.string().min(1, { message: 'Имя не может быть пустым' }),
-  image: z.optional(z.string().url({ message: 'Неверный формат ссылки' })),
+  image: z.optional(z.string()),
+  // image: z.optional(z.string().url({ message: 'Неверный формат ссылки' })),
   isTwoFactorEnabled: z.optional(z.boolean()),
   role: z.enum([UserRole.ADMIN, UserRole.USER]),
   email: z.optional(

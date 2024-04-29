@@ -1,6 +1,7 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
+import { LoadingButton } from '@mui/lab'
 import {
   Avatar,
   Button,
@@ -17,28 +18,29 @@ import {
   Typography,
 } from '@mui/material'
 import { useMediaQuery, useTheme } from '@mui/system'
-import { User } from '@prisma/client'
+import { User, UserRole } from '@prisma/client'
 import { useConfirm } from 'material-ui-confirm'
 import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
-import { useState, useTransition } from 'react'
+import { useEffect, useState, useTransition } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { FcSettings } from 'react-icons/fc'
-import { z } from 'zod'
+import * as z from 'zod'
 
+import { deleteAction } from '@/actions/delete'
+import { logout } from '@/actions/logout'
+import { updateSettingsAction } from '@/actions/settings'
 import BackButton from '@/components/auth/back-button'
 import Header from '@/components/centered-header'
 import FormMessage from '@/components/form-message'
-import { SeverityResult } from '@/lib/helpers'
+import { useCurrentUser } from '@/hooks/use-current-user'
+import { setResult, SeverityResult } from '@/lib/helpers'
 import { settingSchema } from '@/schemas'
-import { deleteAction } from '@/actions/delete'
-import { logout } from '@/actions/logout'
 
-interface SettingsFormProps {
-  user: User
-}
-const SettingsForm = ({ user }: SettingsFormProps) => {
-  const { update: updateUserSessionData } = useSession()
+const SettingsForm = () => {
+  const { data, update: updateUserSessionData } = useSession()
+  const user = useCurrentUser() as User | undefined
+
   const {
     register,
     handleSubmit,
@@ -47,14 +49,15 @@ const SettingsForm = ({ user }: SettingsFormProps) => {
   } = useForm<z.infer<typeof settingSchema>>({
     resolver: zodResolver(settingSchema),
     defaultValues: {
-      name: user.name || undefined,
-      image: user.image || undefined,
-      role: user.role,
-      email: user.email || undefined,
-      isTwoFactorEnabled: user.isTwoFactorEnabled,
+      name: user?.name || undefined,
+      image: user?.image || undefined,
+      role: user?.role as UserRole,
+      email: user?.email || undefined,
+      isTwoFactorEnabled: user?.isTwoFactorEnabled,
     },
     mode: 'onTouched',
   })
+
   const [isPending, startTransition] = useTransition()
   const [updateSettingsResult, setUpdateSettingsResult] =
     useState<SeverityResult>({
@@ -66,12 +69,43 @@ const SettingsForm = ({ user }: SettingsFormProps) => {
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
   const router = useRouter()
   const confirmDlg = useConfirm()
-  const isOAuthUser = user.password === null
+  const isOAuthUser = user?.password === null
 
-  const onSubmit = (data: z.infer<typeof settingSchema>) => {
+  const onSubmit = (values: z.infer<typeof settingSchema>) => {
     setUpdateSettingsResult({ severity: undefined, message: '' })
-    startTransition(async () => {})
+    startTransition(async () => {
+      try {
+        setUpdateSettingsResult({ severity: undefined, message: '' })
+        const result = await updateSettingsAction(values)
+        await updateUserSessionData(data)
+        router.refresh()
+        setResult(result, setUpdateSettingsResult)
+      } catch (error) {
+        setUpdateSettingsResult({
+          severity: 'error',
+          message: 'Что-то пошло не так!',
+        })
+      }
+    })
   }
+  // startTransition(async () => {
+  //   setUpdateSettingsResult({ severity: undefined, message: '' })
+  //   updateSettingsAction(values)
+  //       .then((result) => {
+  //         setResult(result, setUpdateSettingsResult)
+  //         updateUserSessionData(data)
+  //       })
+  //       .then(() => {
+  //         console.log('REFRESH')
+  //         router.refresh()
+  //       })
+  //       .catch(() => {
+  //         setUpdateSettingsResult({
+  //           severity: 'error',
+  //           message: 'Что-то пошло не так!',
+  //         })
+  //       })
+  // })
 
   const handleDeleteAccount = () => {
     confirmDlg({
@@ -96,50 +130,48 @@ const SettingsForm = ({ user }: SettingsFormProps) => {
 
   return (
     <Card sx={{ minWidth: { xs: '328px', sm: '600px' }, mt: { xs: 1, sm: 0 } }}>
-      <Header
-        component="legend"
-        sx={{ paddingTop: 1, paddingBottom: 1 }}
-        title={
-          <Typography
-            fontWeight="600"
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: { xs: '24px', sm: '30px' },
-            }}
-          >
-            <FcSettings style={{ marginRight: '8px' }} />
-            Настройки
-          </Typography>
-        }
-      />
-      <CardHeader
-        avatar={
-          <Avatar
-            src={user?.image || undefined}
-            sx={{
-              width: { xs: '80px', sm: '96px' },
-              height: { xs: '80px', sm: '96px' },
-              border: (theme) => `2px solid ${theme.palette.divider}`,
-            }}
-          />
-        }
-        title={user.name}
-        titleTypographyProps={{
-          fontSize: { xs: '16px', sm: '18px' },
-          fontWeight: '500',
-        }}
-        subheader={`Набор прав: ${user.role}`}
-        sx={{
-          // borderTop: (theme) => `2px solid ${theme.palette.divider}`,
-          // borderBottom: (theme) => `2px solid ${theme.palette.divider}`,
-          paddingTop: 1,
-          paddingBottom: 1,
-        }}
-      />
-      <CardContent>
-        <form onSubmit={handleSubmit(onSubmit)} noValidate>
+      <form onSubmit={handleSubmit(onSubmit)} noValidate>
+        <Header
+          component="legend"
+          sx={{ paddingTop: 1, paddingBottom: 1 }}
+          title={
+            <Typography
+              fontWeight="600"
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: { xs: '24px', sm: '30px' },
+              }}
+            >
+              <FcSettings style={{ marginRight: '8px' }} />
+              Настройки
+            </Typography>
+          }
+        />
+        <CardHeader
+          avatar={
+            <Avatar
+              src={user?.image || undefined}
+              sx={{
+                width: { xs: '80px', sm: '96px' },
+                height: { xs: '80px', sm: '96px' },
+                border: (theme) => `2px solid ${theme.palette.divider}`,
+              }}
+            />
+          }
+          title={user?.name}
+          titleTypographyProps={{
+            fontSize: { xs: '16px', sm: '18px' },
+            fontWeight: '500',
+          }}
+          subheader={`Набор прав: ${user?.role}`}
+          sx={{
+            paddingTop: 1,
+            paddingBottom: 1,
+          }}
+        />
+        <CardContent>
           <Stack direction={'column'} gap={2} mb={3}>
             <TextField
               {...register('name')}
@@ -174,7 +206,7 @@ const SettingsForm = ({ user }: SettingsFormProps) => {
               <Controller
                 name={'role'}
                 control={control}
-                defaultValue={user.role}
+                defaultValue={user?.role}
                 render={({ field }) => (
                   <TextField
                     {...field}
@@ -197,7 +229,7 @@ const SettingsForm = ({ user }: SettingsFormProps) => {
                 <Controller
                   name={'isTwoFactorEnabled'}
                   control={control}
-                  defaultValue={user.isTwoFactorEnabled}
+                  defaultValue={user?.isTwoFactorEnabled}
                   render={({ field: { onChange, value } }) => (
                     <FormControlLabel
                       control={
@@ -223,40 +255,50 @@ const SettingsForm = ({ user }: SettingsFormProps) => {
               }}
             />
           </Stack>
-        </form>
-      </CardContent>
-      <CardActions
-        sx={{
-          pt: 0,
-          justifyContent: isMobile ? 'space-between' : 'flex-end',
-        }}
-      >
-        <Button
-          size={isMobile ? 'small' : 'medium'}
-          color="error"
-          variant="outlined"
-          onClick={handleDeleteAccount}
+        </CardContent>
+        <CardActions
+          sx={{
+            pt: 0,
+            justifyContent: isMobile ? 'space-between' : 'flex-end',
+          }}
         >
-          удалить
-        </Button>
-        {!isOAuthUser && (
           <Button
             size={isMobile ? 'small' : 'medium'}
-            onClick={() => {
-              router.push('/change-password')
-            }}
+            color="error"
             variant="outlined"
+            onClick={handleDeleteAccount}
+            disabled={isPending}
+            type={'button'}
           >
-            смена пароля
+            удалить
           </Button>
-        )}
-        <Button size={isMobile ? 'small' : 'medium'} variant="outlined">
-          сохранить
-        </Button>
-      </CardActions>
-      <CardContent sx={isMobile ? { '&:last-child': { pt: 0, pb: 1 } } : {}}>
-        <BackButton label={'На главную'} href={'/'} disabled={isPending} />
-      </CardContent>
+          {!isOAuthUser && (
+            <Button
+              size={isMobile ? 'small' : 'medium'}
+              onClick={() => {
+                router.push('/change-password')
+              }}
+              variant="outlined"
+              disabled={isPending}
+              type={'button'}
+            >
+              смена пароля
+            </Button>
+          )}
+          <LoadingButton
+            size={isMobile ? 'small' : 'medium'}
+            variant="outlined"
+            loading={isPending}
+            type={'submit'}
+            loadingPosition="start"
+          >
+            сохранить
+          </LoadingButton>
+        </CardActions>
+        <CardContent sx={isMobile ? { '&:last-child': { pt: 0, pb: 1 } } : {}}>
+          <BackButton label={'На главную'} href={'/'} disabled={isPending} />
+        </CardContent>
+      </form>
     </Card>
   )
 }

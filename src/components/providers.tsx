@@ -1,14 +1,21 @@
 'use client'
-import { Slide, SlideProps, TextFieldProps, ThemeProvider } from '@mui/material'
+import { CssBaseline, Slide, ThemeProvider } from '@mui/material'
 import { TransitionProps } from '@mui/material/transitions'
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v13-appRouter'
 import { ConfirmOptions, ConfirmProvider } from 'material-ui-confirm'
-import { forwardRef } from 'react'
+import { Session } from 'next-auth'
+import { SessionProvider } from 'next-auth/react'
+import React, { forwardRef } from 'react'
 
 import BackDropWithBlur from '@/components/BackDropWithBlur'
 import theme from '@/styles/theme'
 
-const Providers = ({ children }: Readonly<{ children: React.ReactNode }>) => {
+interface ProvidersProps {
+  children: React.ReactNode
+  session: Session | null
+}
+
+const Providers = ({ children, session }: ProvidersProps) => {
   const Transition = forwardRef<
     HTMLElement,
     TransitionProps & { children: React.ReactElement }
@@ -36,11 +43,14 @@ const Providers = ({ children }: Readonly<{ children: React.ReactNode }>) => {
 
   return (
     <AppRouterCacheProvider>
-      <ThemeProvider theme={theme}>
-        <ConfirmProvider defaultOptions={confirmDlgOptions as ConfirmOptions}>
-          {children}
-        </ConfirmProvider>
-      </ThemeProvider>
+      <SessionProvider session={session}>
+        <ThemeProvider theme={theme}>
+          <ConfirmProvider defaultOptions={confirmDlgOptions as ConfirmOptions}>
+            <CssBaseline />
+            {children}
+          </ConfirmProvider>
+        </ThemeProvider>
+      </SessionProvider>
     </AppRouterCacheProvider>
   )
 }

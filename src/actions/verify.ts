@@ -1,11 +1,15 @@
 'use server'
 
-import { getUserByEmail } from '@/data/user'
+import { VerificationToken } from '@prisma/client'
+
+import { getUserByEmail, getUserById } from '@/data/user'
 import { getVerificationTokenByToken } from '@/data/verification-token'
 import { db } from '@/lib/db'
 
 export const verifyAction = async (token: string) => {
-  const existingToken = await getVerificationTokenByToken(token)
+  const existingToken = (await getVerificationTokenByToken(
+    token
+  )) as VerificationToken
   if (!existingToken) {
     return {
       code: 'error',
@@ -22,7 +26,9 @@ export const verifyAction = async (token: string) => {
     }
   }
 
-  const existingUser = await getUserByEmail(existingToken.email)
+  const existingUser =
+    (await getUserByEmail(existingToken.email)) ||
+    (await getUserById(existingToken.userId))
   if (!existingUser) {
     return {
       code: 'error',

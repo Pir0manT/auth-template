@@ -1,10 +1,11 @@
 'use server'
 
-import { getCurrentUser } from '@/lib/auth'
-import { getUserById } from '@/data/user'
 import { User } from '@prisma/client'
-import { db } from '@/lib/db'
+
 import { logout } from '@/actions/logout'
+import { getUserById } from '@/data/user'
+import { getCurrentUser } from '@/lib/auth'
+import { db } from '@/lib/db'
 
 export const deleteAction = async () => {
   const currentUser = await getCurrentUser()

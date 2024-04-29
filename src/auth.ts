@@ -33,18 +33,34 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       }
       return true
     },
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger }) {
+      if (trigger === 'update' && token?.user) {
+        const userId = (token.user as User).id
+        const dbUser = await db.user.findUnique({
+          where: {
+            id: userId,
+          },
+        })
+        if (dbUser) {
+          token.user = {
+            ...dbUser,
+            password: (dbUser as User).password ? '***' : null,
+          }
+        }
+      }
       if (user) {
         token.user = {
           ...user,
           password: (user as User).password ? '***' : null,
         }
       }
+
       return token
     },
-    async session({ session, token }) {
-      if (token?.user) session.user = token.user as AdapterUser
-
+    async session({ session, token, trigger }) {
+      if (token?.user) {
+        session.user = token.user as AdapterUser
+      }
       return session
     },
   },
