@@ -21,6 +21,7 @@ services:
         SMTP_EMAIL: ${SMTP_EMAIL}
         SMTP_PASS: ${SMTP_PASS}
         SMTP_PORT: ${SMTP_PORT}
+        SMTP_HOST: ${SMTP_HOST}
         TWO_FACTOR_TOKEN_LIFETIME: ${TWO_FACTOR_TOKEN_LIFETIME}
     image: auth-template-app
     restart: always
