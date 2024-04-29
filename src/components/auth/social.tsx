@@ -1,6 +1,7 @@
 'use client'
 import { Box, Typography } from '@mui/material'
 import { Button } from '@mui/material'
+import { useSearchParams } from 'next/navigation'
 import { signIn } from 'next-auth/react'
 import { BsGithub } from 'react-icons/bs'
 import { FcGoogle } from 'react-icons/fc'
@@ -14,10 +15,14 @@ interface SocialProps {
 }
 
 const Social = ({ disableSocialButtons }: SocialProps) => {
+  const searchParam = useSearchParams()
+  const callbackUrl = searchParam.get('callbackUrl')
   const onClick = async (
     provider: 'google' | 'yandex' | 'discord' | 'github'
   ) => {
-    await signIn(provider, { callbackUrl: DEFAULT_LOGIN_REDIRECT })
+    await signIn(provider, {
+      callbackUrl: callbackUrl || DEFAULT_LOGIN_REDIRECT,
+    })
   }
   return (
     <>

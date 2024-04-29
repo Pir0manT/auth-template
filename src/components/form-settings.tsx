@@ -22,7 +22,7 @@ import { User, UserRole } from '@prisma/client'
 import { useConfirm } from 'material-ui-confirm'
 import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
-import { useEffect, useState, useTransition } from 'react'
+import { useState, useTransition } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { FcSettings } from 'react-icons/fc'
 import * as z from 'zod'
@@ -88,24 +88,6 @@ const SettingsForm = () => {
       }
     })
   }
-  // startTransition(async () => {
-  //   setUpdateSettingsResult({ severity: undefined, message: '' })
-  //   updateSettingsAction(values)
-  //       .then((result) => {
-  //         setResult(result, setUpdateSettingsResult)
-  //         updateUserSessionData(data)
-  //       })
-  //       .then(() => {
-  //         console.log('REFRESH')
-  //         router.refresh()
-  //       })
-  //       .catch(() => {
-  //         setUpdateSettingsResult({
-  //           severity: 'error',
-  //           message: 'Что-то пошло не так!',
-  //         })
-  //       })
-  // })
 
   const handleDeleteAccount = () => {
     confirmDlg({

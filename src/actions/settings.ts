@@ -3,8 +3,8 @@
 import { User } from '@prisma/client'
 import { z } from 'zod'
 
+import { auth } from '@/auth'
 import { getUserByEmail, getUserById } from '@/data/user'
-import { getCurrentUser } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { sendVerificationEmail } from '@/lib/mailer'
 import { generateVerificationToken } from '@/lib/tokens'
@@ -13,7 +13,8 @@ import { settingSchema } from '@/schemas'
 export const updateSettingsAction = async (
   values: z.infer<typeof settingSchema>
 ) => {
-  const user = await getCurrentUser()
+  const session = await auth()
+  const user = session?.user
   if (!user)
     return {
       code: 'error',
@@ -60,6 +61,15 @@ export const updateSettingsAction = async (
     },
     data: isEmailChanged ? { ...values, emailVerified: null } : { ...values },
   })
+
+  // Update session
+  // Судя по приставке unstable это нестабильная версия
+  // на текущий момент лучше использовать комбинацию
+  // из SessionProvider и useSession для получения данных текущей сессии
+  // с вызовом router.refresh() для обновления данных в серверных компонентах
+  // https://authjs.dev/reference/next-auth#unstable_update
+
+  // await unstable_update({ user: updatedUser })
 
   return {
     code: 'success',

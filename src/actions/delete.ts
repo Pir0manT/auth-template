@@ -2,7 +2,6 @@
 
 import { User } from '@prisma/client'
 
-import { logout } from '@/actions/logout'
 import { getUserById } from '@/data/user'
 import { getCurrentUser } from '@/lib/auth'
 import { db } from '@/lib/db'

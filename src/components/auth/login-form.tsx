@@ -30,7 +30,6 @@ const LoginForm = () => {
     handleSubmit,
     formState: { errors },
     watch,
-    // control,
   } = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -47,7 +46,9 @@ const LoginForm = () => {
     message: '',
   })
 
-  const urlError = useSearchParams().get('error') === 'OAuthAccountNotLinked'
+  const searchParam = useSearchParams()
+  const urlError = searchParam.get('error') === 'OAuthAccountNotLinked'
+  const callbackUrl = searchParam.get('callbackUrl')
   useEffect(() => {
     if (urlError) {
       setLoginResult({
@@ -66,7 +67,7 @@ const LoginForm = () => {
       // await new Promise((resolve) => {
       //   setTimeout(resolve, 3 * 1000)
       // })
-      loginAction(data)
+      loginAction(data, callbackUrl)
         .then((result) => {
           if (!result) return
           if (result.tokenFactor) {

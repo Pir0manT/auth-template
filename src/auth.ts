@@ -7,7 +7,7 @@ import authConfig from '@/auth.config'
 import { getTwoFactorConfirmationByUserId } from '@/data/two-factor-confirmation'
 import { db } from '@/lib/db'
 
-export const { handlers, signIn, signOut, auth } = NextAuth({
+export const { handlers, signIn, signOut, auth, unstable_update } = NextAuth({
   pages: {
     signIn: '/auth/login',
     error: '/auth/error',
@@ -57,7 +57,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
       return token
     },
-    async session({ session, token, trigger }) {
+    async session({ session, token }) {
       if (token?.user) {
         session.user = token.user as AdapterUser
       }

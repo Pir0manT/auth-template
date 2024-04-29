@@ -41,9 +41,9 @@ const RegisterForm = () => {
     setRegisterResult({ severity: undefined, message: '' })
 
     startTransition(async () => {
-      await new Promise((resolve) => {
-        setTimeout(resolve, 3 * 1000)
-      })
+      // await new Promise((resolve) => {
+      //   setTimeout(resolve, 3 * 1000)
+      // })
       registerAction(data)
         .then((result) => {
           setResult(result, setRegisterResult)

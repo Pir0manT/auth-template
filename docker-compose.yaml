@@ -1,0 +1,35 @@
+version: '3.3'
+services:
+  auth-template-app:
+    container_name: auth-template-app
+    build:
+      context: ./auth-template
+      dockerfile: Dockerfile
+      args:
+        DATABASE_URL: ${DATABASE_URL}
+        NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
+        NEXTAUTH_URL: ${NEXTAUTH_URL}
+        NEXT_PUBLIC_BASE_API_URL: ${NEXT_PUBLIC_BASE_API_URL}
+        AUTH_TRUST_HOST: ${AUTH_TRUST_HOST}
+        GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+        GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+        YANDEX_CLIENT_ID: ${YANDEX_CLIENT_ID}
+        YANDEX_CLIENT_SECRET: ${YANDEX_CLIENT_SECRET}
+        DISCORD_CLIENT_ID: ${DISCORD_CLIENT_ID}
+        DISCORD_CLIENT_SECRET: ${DISCORD_CLIENT_SECRET}
+        GITHUB_CLIENT_ID: ${GITHUB_CLIENT_ID}
+        GITHUB_CLIENT_SECRET: ${GITHUB_CLIENT_SECRET}
+        SMTP_EMAIL: ${SMTP_EMAIL}
+        SMTP_PASS: ${SMTP_PASS}
+        SMTP_PORT: ${SMTP_PORT}
+        TWO_FACTOR_TOKEN_LIFETIME: ${TWO_FACTOR_TOKEN_LIFETIME}
+        NEXT_TELEMETRY_DISABLED: ${NEXT_TELEMETRY_DISABLED}
+    image: auth-template-app
+    restart: always
+    ports:
+      - 6080:3000
+    environment:
+      - TZ=Europe/Moscow
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /usr/share/zoneinfo/Europe/Moscow:/etc/localtime:ro

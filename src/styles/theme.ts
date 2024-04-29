@@ -4,8 +4,8 @@ import { createTheme } from '@mui/material/styles'
 import { Inter as AppFont } from 'next/font/google'
 
 const appFont = AppFont({
-  weight: ['300', '400', '500', '600'],
-  subsets: ['latin', 'cyrillic'],
+  weight: ['400', '500', '600'],
+  subsets: ['cyrillic'],
   display: 'swap',
 })
 

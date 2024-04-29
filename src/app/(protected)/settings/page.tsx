@@ -1,4 +1,3 @@
-import { User } from '@prisma/client'
 import { SessionProvider } from 'next-auth/react'
 
 import { auth } from '@/auth'

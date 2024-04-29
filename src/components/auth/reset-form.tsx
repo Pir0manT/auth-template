@@ -36,9 +36,9 @@ const ResetForm = () => {
     setResetResult({ severity: undefined, message: '' })
 
     startTransition(async () => {
-      await new Promise((resolve) => {
-        setTimeout(resolve, 3 * 1000)
-      })
+      // await new Promise((resolve) => {
+      //   setTimeout(resolve, 3 * 1000)
+      // })
       resetAction(data)
         .then((result) => {
           setResult(result, setResetResult)

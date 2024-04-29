@@ -1,70 +1,67 @@
 'use client'
-
 import { zodResolver } from '@hookform/resolvers/zod'
 import EnhancedEncryptionIcon from '@mui/icons-material/EnhancedEncryption'
 import { LoadingButton } from '@mui/lab'
 import { Stack } from '@mui/material'
-import { useSearchParams } from 'next/navigation'
+import { User } from '@prisma/client'
 import { useState, useTransition } from 'react'
 import { useForm } from 'react-hook-form'
-import * as z from 'zod'
+import { z } from 'zod'
 
-import { setNewPasswordAction } from '@/actions/new-password'
+import { changePasswordAction } from '@/actions/change-password'
 import CardWrapper from '@/components/auth/card-wrapper'
 import PasswordField from '@/components/auth/password-field'
 import FormMessage from '@/components/form-message'
+import { useCurrentUser } from '@/hooks/use-current-user'
 import { setResult, SeverityResult } from '@/lib/helpers'
-import { newPasswordSchema } from '@/schemas'
+import { changePasswordSchema } from '@/schemas'
 
-const NewPasswordForm = () => {
-  const searchParams = useSearchParams()
-  const token = searchParams.get('token')
-
+const ChangePasswordForm = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<z.infer<typeof newPasswordSchema>>({
-    resolver: zodResolver(newPasswordSchema),
+  } = useForm<z.infer<typeof changePasswordSchema>>({
+    resolver: zodResolver(changePasswordSchema),
     defaultValues: {
       password: '',
+      newPassword: '',
       passwordConfirmation: '',
     },
     mode: 'onTouched',
   })
 
   const [isPending, startTransition] = useTransition()
-  const [setNewPasswordResult, setNewPasswordSetResult] =
+  const [changePasswordResult, setChangePasswordResult] =
     useState<SeverityResult>({
       severity: undefined,
       message: '',
     })
 
-  const onSubmit = (data: z.infer<typeof newPasswordSchema>) => {
-    setNewPasswordSetResult({ severity: undefined, message: '' })
-
+  const onSubmit = (values: z.infer<typeof changePasswordSchema>) => {
+    setChangePasswordResult({ severity: undefined, message: '' })
     startTransition(async () => {
-      // await new Promise((resolve) => {
-      //   setTimeout(resolve, 3 * 1000)
-      // })
-      setNewPasswordAction(data, token)
+      changePasswordAction(values)
         .then((result) => {
-          setResult(result, setNewPasswordSetResult)
+          setResult(result, setChangePasswordResult)
         })
         .catch(() => {
-          setNewPasswordSetResult({
+          setChangePasswordResult({
             severity: 'error',
             message: 'Что-то пошло не так!',
           })
         })
     })
   }
-  if (!token) return null
+
+  const currentUser = useCurrentUser()
+  if (!currentUser || !(currentUser as User).password) return null
+
   return (
     <CardWrapper
-      headerLabel={'Введите новый пароль'}
-      backButtonLabel={'На страницу входа'}
-      backButtonHref={'/auth/login'}
+      headerLabel={'Изменение пароля'}
+      backButtonLabel={'На главную'}
+      backButtonHref={'/'}
       disableButtons={isPending}
     >
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
@@ -73,7 +70,15 @@ const NewPasswordForm = () => {
             {...register('password')}
             error={!!errors.password}
             helperText={errors.password?.message}
-            label="Пароль"
+            label="Текущий пароль"
+            variant="outlined"
+            disabled={isPending}
+          />
+          <PasswordField
+            {...register('newPassword')}
+            error={!!errors.newPassword}
+            helperText={errors.newPassword?.message}
+            label="Новый пароль"
             variant="outlined"
             disabled={isPending}
           />
@@ -81,16 +86,16 @@ const NewPasswordForm = () => {
             {...register('passwordConfirmation')}
             error={!!errors.passwordConfirmation}
             helperText={errors.passwordConfirmation?.message}
-            label="Пароль еще раз"
+            label="Новый пароль еще раз"
             variant="outlined"
             disabled={isPending}
           />
           <FormMessage
-            message={setNewPasswordResult.message}
-            severity={setNewPasswordResult.severity}
-            onClose={() => {
-              setNewPasswordSetResult({ severity: undefined, message: '' })
-            }}
+            message={changePasswordResult.message}
+            severity={changePasswordResult.severity}
+            onClose={() =>
+              setChangePasswordResult({ severity: undefined, message: '' })
+            }
           />
         </Stack>
         <LoadingButton
@@ -102,11 +107,11 @@ const NewPasswordForm = () => {
           type="submit"
           fullWidth
         >
-          Установить новый пароль
+          изменить пароль
         </LoadingButton>
       </form>
     </CardWrapper>
   )
 }
 
-export default NewPasswordForm
+export default ChangePasswordForm

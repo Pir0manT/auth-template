@@ -12,7 +12,10 @@ import { generateTwoFactorToken, generateVerificationToken } from '@/lib/tokens'
 import { DEFAULT_LOGIN_REDIRECT } from '@/routes'
 import { loginSchema } from '@/schemas'
 
-export const loginAction = async (values: z.infer<typeof loginSchema>) => {
+export const loginAction = async (
+  values: z.infer<typeof loginSchema>,
+  callbackUrl?: string | null
+) => {
   const validatedFields = loginSchema.safeParse(values)
   if (!validatedFields.success) {
     return {
@@ -96,8 +99,7 @@ export const loginAction = async (values: z.infer<typeof loginSchema>) => {
     await signIn('credentials', {
       email,
       password,
-      // redirectTo: callbackUrl || DEFAULT_LOGIN_REDIRECT,
-      redirectTo: DEFAULT_LOGIN_REDIRECT,
+      redirectTo: callbackUrl || DEFAULT_LOGIN_REDIRECT,
     })
   } catch (error) {
     if (error instanceof AuthError) {
