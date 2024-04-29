@@ -20,7 +20,7 @@ export const loginAction = async (
   if (!validatedFields.success) {
     return {
       code: 'error',
-      message: 'Неправильный email или пароль',
+      message: 'Неправильный email или пароль 1',
     }
   }
 
@@ -30,7 +30,7 @@ export const loginAction = async (
   if (!existingUser || !existingUser.password || !existingUser.email) {
     return {
       code: 'error',
-      message: 'Неправильный email или пароль',
+      message: 'Неправильный email или пароль 2',
     }
   }
 
