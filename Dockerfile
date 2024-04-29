@@ -19,8 +19,9 @@ RUN \
 COPY src ./src
 COPY public ./public
 COPY prisma ./prisma
-COPY next.config.js .
-COPY jsconfig.json .
+COPY next.config.mjs .
+COPY tsconfig.json .
+COPY next-env.d.ts .
 
 # Environment variables must be present at build time
 # https://github.com/vercel/next.js/discussions/14030
